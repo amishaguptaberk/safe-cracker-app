@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,51 +7,12 @@ import { CommonModule } from '@angular/common';
   selector: 'app-root',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  template: `
-    <div class="card">
-      <h1>Safe Cracker</h1>
-      <div class="field">
-        <label for="combo">10-digit combination</label>
-        <input
-          id="combo"
-          type="text"
-          maxlength="10"
-          inputmode="numeric"
-          pattern="[0-9]{10}"
-          placeholder="e.g. 0800666666"
-          autocomplete="off"
-          [(ngModel)]="combo"
-        >
-      </div>
-      <button (click)="startCrack()" [disabled]="running">Crack It</button>
-
-      <div class="spinner" *ngIf="spinning">
-        <span
-          *ngFor="let slot of slots; let i = index"
-          class="slot"
-          [class.locked]="locked[i]"
-        >{{ slot }}</span>
-      </div>
-
-      <div class="result" *ngIf="jobStarted">
-        <div class="stat">
-          <span class="label">Attempts</span>
-          <span class="value">{{ attempts }}</span>
-        </div>
-        <div class="stat">
-          <span class="label">Time</span>
-          <span class="value">{{ timeTaken !== null ? timeTaken.toFixed(2) + 's' : '--' }}</span>
-        </div>
-        <div class="badge" [class.running]="!done" [class.done]="done">
-          {{ done ? 'Cracked!' : 'Running...' }}
-        </div>
-      </div>
-
-      <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
-    </div>
-  `,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnDestroy {
+  private http = inject(HttpClient);
+
   combo = '';
   attempts = 0;
   timeTaken: number | null = null;
@@ -65,8 +26,6 @@ export class AppComponent implements OnDestroy {
 
   private pollInterval: ReturnType<typeof setInterval> | null = null;
   private spinIntervals: ReturnType<typeof setInterval>[] = [];
-
-  constructor(private http: HttpClient) {}
 
   startCrack() {
     this.errorMsg = '';
