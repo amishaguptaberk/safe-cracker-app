@@ -139,29 +139,3 @@ button:disabled {
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
 }
-
-.spinner {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: center;
-}
-
-.slot {
-  width: 2.4rem;
-  height: 3rem;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: gray;
-  font-family: inherit;
-}
-
-.slot.locked {
-  color: #c8ff00;
-  border-color: #c8ff00;
-}

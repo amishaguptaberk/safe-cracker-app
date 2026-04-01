@@ -1,7 +1,7 @@
 import threading
 import time
 import uuid
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 jobs = {}
@@ -21,17 +21,12 @@ def run_crack_safe(job_id, combo):
             current[position] = digit
             attempts += 1
             jobs[job_id]["attempts"] = attempts
+            time.sleep(0.01)
             if check_combination(current, combo) == position + 1:
                 break
-        time.sleep(0.05)
 
     jobs[job_id]["done"] = True
     jobs[job_id]["time_taken"] = round(time.time() - start, 3)
-
-
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 
 @app.route("/api/crack_safe", methods=["POST"])

@@ -15,15 +15,7 @@
   </div>
   <button (click)="startCrack()" [disabled]="running">Crack It</button>
 
-  <div class="spinner" *ngIf="spinning">
-    <span
-      *ngFor="let slot of slots; let i = index"
-      class="slot"
-      [class.locked]="locked[i]"
-    >{{ slot }}</span>
-  </div>
-
-  <div class="result" *ngIf="jobStarted">
+  <div class="result" *ngIf="started">
     <div class="stat">
       <span class="label">Attempts</span>
       <span class="value">{{ attempts }}</span>
