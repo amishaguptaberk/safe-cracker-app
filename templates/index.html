@@ -11,9 +11,9 @@
     <h1>Safe Cracker</h1>
     <div class="field">
       <label for="combo">10-digit combination</label>
-      <input id="combo" type="text" maxlength="10" placeholder="e.g. 0800666666" autocomplete="off">
+      <input id="combo" type="text" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" value="0800666666" autocomplete="off">
     </div>
-    <button id="crack-btn" onclick="startCrack()">Crack It</button>
+    <button onclick="startCrack()">Crack It</button>
     <div id="result" class="result hidden">
       <div class="stat">
         <span class="label">Attempts</span>
@@ -35,10 +35,13 @@
       const combo = document.getElementById("combo").value.trim();
       const errorEl = document.getElementById("error");
       const resultEl = document.getElementById("result");
+      const btn = document.querySelector("button");
 
       errorEl.classList.add("hidden");
       resultEl.classList.add("hidden");
       if (pollInterval) clearInterval(pollInterval);
+
+      btn.disabled = true;
 
       fetch("/api/crack_safe/", {
         method: "POST",
@@ -50,32 +53,40 @@
         if (data.error) {
           errorEl.textContent = data.error;
           errorEl.classList.remove("hidden");
+          btn.disabled = false;
           return;
         }
-        document.getElementById("attempts").textContent = "0";
-        document.getElementById("time").textContent = "--";
         document.getElementById("status-badge").textContent = "Running...";
         document.getElementById("status-badge").className = "badge running";
         resultEl.classList.remove("hidden");
-        pollInterval = setInterval(() => poll(data.job_id), 500);
+        poll(data.job_id, btn);
+        pollInterval = setInterval(() => poll(data.job_id, btn), 100);
       })
       .catch(() => {
-        errorEl.textContent = "Request failed.";
+        errorEl.textContent = "Request failed";
         errorEl.classList.remove("hidden");
+        btn.disabled = false;
       });
     }
 
-    function poll(jobId) {
+    function poll(jobId, btn) {
       fetch("/api/status/" + jobId)
         .then(r => r.json())
         .then(data => {
           document.getElementById("attempts").textContent = data.attempts;
           if (data.done) {
             clearInterval(pollInterval);
-            document.getElementById("time").textContent = data.time_taken + "s";
+            document.getElementById("time").textContent = data.time_taken.toFixed(2) + "s";
             document.getElementById("status-badge").textContent = "Cracked!";
             document.getElementById("status-badge").className = "badge done";
+            btn.disabled = false;
           }
+        })
+        .catch(() => {
+          clearInterval(pollInterval);
+          document.getElementById("error").textContent = "Lost connection";
+          document.getElementById("error").classList.remove("hidden");
+          btn.disabled = false;
         });
     }
   </script>

@@ -22,6 +22,7 @@ def crack_safe(combo, job_id=None):
             attempts += 1
             if job_id is not None:
                 jobs[job_id]["attempts"] = attempts
+            time.sleep(0.01)
             if check_combination(current, combo) == position + 1:
                 break
 
