@@ -1,0 +1,148 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f0f0f;
+  font-family: 'Courier New', monospace;
+  color: #e0e0e0;
+}
+
+.card {
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+h1 {
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c8ff00;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+}
+
+input {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-family: inherit;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  padding: 0.6rem 0.75rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus {
+  border-color: #c8ff00;
+}
+
+button {
+  background: #c8ff00;
+  border: none;
+  border-radius: 4px;
+  color: #0f0f0f;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.65rem 1rem;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+
+button:hover {
+  background: #d9ff33;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.result.hidden {
+  display: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.stat .label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+}
+
+.stat .value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+}
+
+.badge.running {
+  background: #222;
+  color: #888;
+  border: 1px solid #333;
+}
+
+.badge.done {
+  background: #1a2e00;
+  color: #c8ff00;
+  border: 1px solid #c8ff00;
+}
+
+.error {
+  font-size: 0.8rem;
+  color: #ff5555;
+  border: 1px solid #441111;
+  background: #1a0a0a;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+}
+
+.error.hidden {
+  display: none;
+}

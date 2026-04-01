@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Cracker</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="card">
+    <h1>Safe Cracker</h1>
+    <div class="field">
+      <label for="combo">10-digit combination</label>
+      <input id="combo" type="text" maxlength="10" placeholder="e.g. 0800666666" autocomplete="off">
+    </div>
+    <button id="crack-btn" onclick="startCrack()">Crack It</button>
+    <div id="result" class="result hidden">
+      <div class="stat">
+        <span class="label">Attempts</span>
+        <span id="attempts" class="value">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Time</span>
+        <span id="time" class="value">--</span>
+      </div>
+      <div id="status-badge" class="badge running">Running...</div>
+    </div>
+    <div id="error" class="error hidden"></div>
+  </div>
+
+  <script>
+    let pollInterval = null;
+
+    function startCrack() {
+      const combo = document.getElementById("combo").value.trim();
+      const errorEl = document.getElementById("error");
+      const resultEl = document.getElementById("result");
+
+      errorEl.classList.add("hidden");
+      resultEl.classList.add("hidden");
+      if (pollInterval) clearInterval(pollInterval);
+
+      fetch("/api/crack_safe/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ actual_combination: combo })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) {
+          errorEl.textContent = data.error;
+          errorEl.classList.remove("hidden");
+          return;
+        }
+        document.getElementById("attempts").textContent = "0";
+        document.getElementById("time").textContent = "--";
+        document.getElementById("status-badge").textContent = "Running...";
+        document.getElementById("status-badge").className = "badge running";
+        resultEl.classList.remove("hidden");
+        pollInterval = setInterval(() => poll(data.job_id), 500);
+      })
+      .catch(() => {
+        errorEl.textContent = "Request failed.";
+        errorEl.classList.remove("hidden");
+      });
+    }
+
+    function poll(jobId) {
+      fetch("/api/status/" + jobId)
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById("attempts").textContent = data.attempts;
+          if (data.done) {
+            clearInterval(pollInterval);
+            document.getElementById("time").textContent = data.time_taken + "s";
+            document.getElementById("status-badge").textContent = "Cracked!";
+            document.getElementById("status-badge").className = "badge done";
+          }
+        });
+    }
+  </script>
+</body>
+</html>
