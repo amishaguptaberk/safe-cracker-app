@@ -43,7 +43,7 @@
 
       btn.disabled = true;
 
-      fetch("/api/crack_safe/", {
+      fetch("/api/crack_safe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ actual_combination: combo })

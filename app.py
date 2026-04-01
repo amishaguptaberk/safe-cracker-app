@@ -11,7 +11,7 @@ def check_combination(guess, actual):
     return sum(g == a for g, a in zip(guess, actual))
 
 
-def crack_safe(combo, job_id=None):
+def run_crack_safe(job_id, combo):
     start = time.time()
     attempts = 0
     current = ["0"] * 10
@@ -20,20 +20,13 @@ def crack_safe(combo, job_id=None):
         for digit in "0123456789":
             current[position] = digit
             attempts += 1
-            if job_id is not None:
-                jobs[job_id]["attempts"] = attempts
-            time.sleep(0.01)
+            jobs[job_id]["attempts"] = attempts
             if check_combination(current, combo) == position + 1:
                 break
+        time.sleep(0.05)
 
-    return attempts, round(time.time() - start, 3)
-
-
-def run_crack_safe(job_id, combo):
-    attempts, time_taken = crack_safe(combo, job_id)
-    jobs[job_id]["attempts"] = attempts
     jobs[job_id]["done"] = True
-    jobs[job_id]["time_taken"] = time_taken
+    jobs[job_id]["time_taken"] = round(time.time() - start, 3)
 
 
 @app.route("/")
@@ -41,7 +34,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/api/crack_safe/", methods=["POST"])
+@app.route("/api/crack_safe", methods=["POST"])
 def start_crack():
     data = request.get_json(force=True)
     combo = data.get("actual_combination", "")
@@ -63,4 +56,4 @@ def status(job_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
