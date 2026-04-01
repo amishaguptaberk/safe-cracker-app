@@ -91,10 +91,6 @@ button:disabled {
   gap: 1rem;
 }
 
-.result.hidden {
-  display: none;
-}
-
 .stat {
   display: flex;
   flex-direction: column;
@@ -144,18 +140,10 @@ button:disabled {
   padding: 0.5rem 0.75rem;
 }
 
-.error.hidden {
-  display: none;
-}
-
 .spinner {
   display: flex;
   gap: 0.4rem;
   justify-content: center;
-}
-
-.spinner.hidden {
-  display: none;
 }
 
 .slot {

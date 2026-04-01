@@ -14,6 +14,18 @@
       <input id="combo" type="text" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" placeholder="e.g. 0800666666" autocomplete="off">
     </div>
     <button onclick="startCrack()">Crack It</button>
+    <div id="spinner" class="spinner hidden">
+      <span class="slot" id="slot-0">0</span>
+      <span class="slot" id="slot-1">0</span>
+      <span class="slot" id="slot-2">0</span>
+      <span class="slot" id="slot-3">0</span>
+      <span class="slot" id="slot-4">0</span>
+      <span class="slot" id="slot-5">0</span>
+      <span class="slot" id="slot-6">0</span>
+      <span class="slot" id="slot-7">0</span>
+      <span class="slot" id="slot-8">0</span>
+      <span class="slot" id="slot-9">0</span>
+    </div>
     <div id="result" class="result hidden">
       <div class="stat">
         <span class="label">Attempts</span>
@@ -30,6 +42,30 @@
 
   <script>
     let pollInterval = null;
+    let spinIntervals = [];
+
+    function startSpinner() {
+      const digits = "0123456789";
+      document.getElementById("spinner").classList.remove("hidden");
+      for (let i = 0; i < 10; i++) {
+        let counter = 0;
+        const slot = document.getElementById("slot-" + i);
+        slot.className = "slot";
+        spinIntervals[i] = setInterval(() => {
+          slot.textContent = digits[counter % 10];
+          counter++;
+        }, 80);
+      }
+    }
+
+    function stopSpinner(finalCombo) {
+      for (let i = 0; i < 10; i++) {
+        clearInterval(spinIntervals[i]);
+        const slot = document.getElementById("slot-" + i);
+        slot.textContent = finalCombo[i];
+        slot.classList.add("locked");
+      }
+    }
 
     function startCrack() {
       const combo = document.getElementById("combo").value.trim();
@@ -39,6 +75,7 @@
 
       errorEl.classList.add("hidden");
       resultEl.classList.add("hidden");
+      document.getElementById("spinner").classList.add("hidden");
       if (pollInterval) clearInterval(pollInterval);
 
       btn.disabled = true;
@@ -59,6 +96,7 @@
         document.getElementById("status-badge").textContent = "Running...";
         document.getElementById("status-badge").className = "badge running";
         resultEl.classList.remove("hidden");
+        startSpinner();
         poll(data.job_id, btn);
         pollInterval = setInterval(() => poll(data.job_id, btn), 100);
       })
@@ -79,6 +117,8 @@
             document.getElementById("time").textContent = data.time_taken.toFixed(2) + "s";
             document.getElementById("status-badge").textContent = "Cracked!";
             document.getElementById("status-badge").className = "badge done";
+            const finalCombo = document.getElementById("combo").value.trim();
+            stopSpinner(finalCombo);
             btn.disabled = false;
           }
         })
