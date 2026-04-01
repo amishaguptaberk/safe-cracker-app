@@ -177,3 +177,14 @@ button:disabled {
   color: #c8ff00;
   border-color: #c8ff00;
 }
+
+.cache-label {
+  font-size: 0.7rem;
+  color: gray;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cache-label.hidden {
+  display: none;
+}

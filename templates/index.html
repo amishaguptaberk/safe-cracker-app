@@ -37,12 +37,14 @@
       </div>
       <div id="status-badge" class="badge running">Running...</div>
     </div>
+    <div id="cache-label" class="cache-label hidden">cached result</div>
     <div id="error" class="error hidden"></div>
   </div>
 
   <script>
     let pollInterval = null;
     let spinIntervals = [];
+    let cache = {};
 
     function startSpinner() {
       const digits = "0123456789";
@@ -80,6 +82,18 @@
 
       btn.disabled = true;
 
+      if (cache[combo]) {
+        const cached = cache[combo];
+        document.getElementById("attempts").textContent = cached.attempts;
+        document.getElementById("time").textContent = cached.time_taken.toFixed(2) + "s";
+        document.getElementById("status-badge").textContent = "Cracked!";
+        document.getElementById("status-badge").className = "badge done";
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("cache-label").classList.remove("hidden");
+        btn.disabled = false;
+        return;
+      }
+
       fetch("/api/crack_safe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,6 +110,7 @@
         document.getElementById("status-badge").textContent = "Running...";
         document.getElementById("status-badge").className = "badge running";
         resultEl.classList.remove("hidden");
+        document.getElementById("cache-label").classList.add("hidden");
         startSpinner();
         poll(data.job_id, btn);
         pollInterval = setInterval(() => poll(data.job_id, btn), 100);
@@ -118,6 +133,7 @@
             document.getElementById("status-badge").textContent = "Cracked!";
             document.getElementById("status-badge").className = "badge done";
             const finalCombo = document.getElementById("combo").value.trim();
+            cache[finalCombo] = { attempts: data.attempts, time_taken: data.time_taken };
             stopSpinner(finalCombo);
             btn.disabled = false;
           }
